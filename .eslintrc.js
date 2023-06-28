@@ -4,7 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: 'airbnb',
+  extends: 'airbnb-base',
   overrides: [
     {
       env: {
@@ -22,5 +22,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
+    'no-console': 'off',
   },
 };

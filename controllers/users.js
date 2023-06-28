@@ -1,31 +1,33 @@
+/* eslint-disable no-else-return */
+/* eslint-disable consistent-return */
 const userSchema = require('../models/user');
 const {
   errCodeInvalidData,
   errCodeNotFound,
   errCodeDefault,
-  dafaultErrorMessage,
+  defaultErrorMessage,
 } = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   userSchema.find({})
-    .then((users) => res.status(200).send(users))
-    .catch(() => res.status(errCodeDefault).send({ message: dafaultErrorMessage }));
+    .then((users) => res.send(users))
+    .catch(() => res.status(errCodeDefault).send({ message: defaultErrorMessage }));
 };
 
 module.exports.getUser = (req, res) => {
   userSchema.findById(req.params.id)
     .orFail(() => new Error('Not found'))
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.message === 'Not found') {
-        res.status(errCodeNotFound).send({ message: err.message })
+        res.status(errCodeNotFound).send({ message: defaultErrorMessage });
+        return;
       }
       if (err.name === 'CastError') {
-        return res.status(errCodeInvalidData).send({ message: 'Пользователь с данным id не существует.' });
+        res.status(errCodeInvalidData).send({ message: 'Пользователь с данным id не существует.' });
+        return;
       }
-      else {
-        res.status(errCodeDefault).send({ message: err.message });
-      }
+      res.status(errCodeDefault).send({ message: defaultErrorMessage });
     });
 };
 
@@ -37,76 +39,30 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
-      }
-      else {
-        res.status(errCodeDefault).send({ message: err.message });
+      } else {
+        res.status(errCodeDefault).send({ message: defaultErrorMessage });
       }
     });
 };
 
-module.exports.updateUser = (req, res) => {
+const changeUserData = (id, data, res, next) => {
+  userSchema.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
+      }
+      return next(err);
+    });
+};
+
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
-
-  userSchema.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .orFail()
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
-      }
-      if (err.name === 'ValidationError') {
-        return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
-      }
-      else {
-        res.status(errCodeDefault).send({ message: dafaultErrorMessage });
-      }
-    });
+  return changeUserData(req.user._id, { name, about }, res, next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-
-  userSchema.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .orFail()
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
-      }
-      if (err.name === 'ValidationError') {
-        return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
-      }
-      else {
-        res.status(errCodeDefault).send({ message: dafaultErrorMessage });
-      }
-    });
+  return changeUserData(req.user._id, { avatar }, res, next);
 };
-
-
-
-// const getUsers = (req, res) => {
-//   res.status(200).send(users)
-// }
-
-// const getUser = (req, res) => {
-//   const {id} = req.params;
-//   const user = users.find((item) => item.id === Number(id));
-
-//   if (user) {
-//     return res.status(200).send(user)
-//   }
-//   return res.status(404).send({message: 'User not found'})
-// }
-
-// const createUser =(req, res) => {
-//   id += 1;
-//   const newUser = {
-//     id,
-//     ...req.body,
-//   };
-
-//   users.push(newUser);
-//   res.status(201).send(newUser)
-// }
-
-// module.exports = { getUsers, getUser, createUser}
