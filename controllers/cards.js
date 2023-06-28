@@ -9,11 +9,14 @@ const {
 module.exports.getCards = (req, res) => {
   cardSchema.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => res.status(errCodeDefault).send({ message: defaultErrorMessage }));
+    .catch(() => res.status(errCodeDefault).send({ message: defaultErrorMessage }));
 };
 
 module.exports.deleteCard = (req, res) => {
-  cardSchema.findByIdAndRemove(req.params.cardId)
+  const { cardId } = req.params;
+console.log(cardId);
+  cardSchema
+    .findByIdAndRemove(cardId)
     .orFail()
     .then((card) => res.status(200).send(card))
     .catch((err) => {

@@ -9,7 +9,7 @@ const {
 module.exports.getUsers = (req, res) => {
   userSchema.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => res.status(errCodeDefault).send({ message: err.message }));
+    .catch(() => res.status(errCodeDefault).send({ message: dafaultErrorMessage }));
 };
 
 module.exports.getUser = (req, res) => {
@@ -58,7 +58,7 @@ module.exports.updateUser = (req, res) => {
         return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
       }
       else {
-        res.status(errCodeDefault).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: dafaultErrorMessage });
       }
     });
 };
@@ -77,7 +77,7 @@ module.exports.updateAvatar = (req, res) => {
         return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
       }
       else {
-        res.status(errCodeDefault).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: dafaultErrorMessage });
       }
     });
 };
