@@ -14,6 +14,9 @@ module.exports.getUser = (req, res) => {
       if (err.message === 'Not found') {
         res.status(404).send({ message: err.message })
       }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Пользователь с данным id не существует.' });
+      }
       else {
         res.status(500).send({ message: err.message });
       }

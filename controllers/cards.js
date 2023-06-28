@@ -14,6 +14,9 @@ module.exports.deleteCard = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({ message: 'Карточка с данным id не существует.' });
       }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Карточка с данным id не существует.' });
+      }
       else {
         res.status(500).send({ message: err.message });
       }
