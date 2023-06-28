@@ -3,13 +3,13 @@ const {
   errCodeInvalidData,
   errCodeNotFound,
   errCodeDefault,
-  dafaultErrorMessage,
+  defaultErrorMessage,
 } = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   cardSchema.find({})
-    .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(errCodeDefault).send({ message: err.message }));
+    .then((cards) => res.send(cards))
+    .catch((err) => res.status(errCodeDefault).send({ message: defaultErrorMessage }));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -24,7 +24,7 @@ module.exports.deleteCard = (req, res) => {
         return res.status(errCodeInvalidData).send({ message: 'Карточка с данным id не существует.' });
       }
       else {
-        res.status(errCodeDefault).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: defaultErrorMessage });
       }
     })
 };
@@ -33,13 +33,13 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
   cardSchema.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(200).send(card))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
       }
       else {
-        res.status(errCodeDefault).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: defaultErrorMessage });
       }
     });
 };

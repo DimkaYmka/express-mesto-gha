@@ -5,7 +5,7 @@ const { getCards, deleteCard, createCard, addLikeCard, deleteLikeCard } = requir
 
 cardsRouter.get('/', getCards)
 
-cardsRouter.get('/:id', deleteCard)
+cardsRouter.get('/:cardId', deleteCard)
 
 cardsRouter.post('/', createCard)
 
