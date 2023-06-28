@@ -1,9 +1,15 @@
 const cardSchema = require('../models/card');
+const {
+  errCodeInvalidData,
+  errCodeNotFound,
+  errCodeDefault,
+  dafaultErrorMessage,
+} = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   cardSchema.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(errCodeDefault).send({ message: err.message }));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -12,13 +18,13 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Карточка с данным id не существует.' });
+        return res.status(errCodeNotFound).send({ message: 'Карточка с данным id не существует.' });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Карточка с данным id не существует.' });
+        return res.status(errCodeInvalidData).send({ message: 'Карточка с данным id не существует.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     })
 };
@@ -30,10 +36,10 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Данные введены некорректно.' });
+        return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
@@ -44,13 +50,13 @@ module.exports.addLikeCard = (req, res) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Данного id не существует.' });
+        return res.status(errCodeNotFound).send({ message: 'Данного id не существует.' });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Данные для лайка некорректные.' });
+        return res.status(errCodeInvalidData).send({ message: 'Данные для лайка некорректные.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
@@ -61,13 +67,13 @@ module.exports.deleteLikeCard = (req, res) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Данного id не существует.' });
+        return res.status(errCodeNotFound).send({ message: 'Данного id не существует.' });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Данные для лайка некорректные.' });
+        return res.status(errCodeInvalidData).send({ message: 'Данные для лайка некорректные.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };

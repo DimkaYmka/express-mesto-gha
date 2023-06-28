@@ -3,7 +3,7 @@ const userSchema = require('../models/user');
 module.exports.getUsers = (req, res) => {
   userSchema.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(errCodeDefault).send({ message: err.message }));
 };
 
 module.exports.getUser = (req, res) => {
@@ -12,13 +12,13 @@ module.exports.getUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.message === 'Not found') {
-        res.status(404).send({ message: err.message })
+        res.status(errCodeNotFound).send({ message: err.message })
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Пользователь с данным id не существует.' });
+        return res.status(errCodeInvalidData).send({ message: 'Пользователь с данным id не существует.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
@@ -30,10 +30,10 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Данные введены некорректно.' });
+        return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
@@ -46,13 +46,13 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Пользователь с с данным id не существует.' });
+        return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
       }
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные.' });
+        return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
@@ -65,13 +65,13 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Пользователь с с данным id не существует.' });
+        return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
       }
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные.' });
+        return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
       }
       else {
-        res.status(500).send({ message: err.message });
+        res.status(errCodeDefault).send({ message: err.message });
       }
     });
 };
