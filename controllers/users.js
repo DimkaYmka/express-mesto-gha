@@ -8,8 +8,16 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   userSchema.findById(req.params.id)
+    .orFail(() => new Error('Not found'))
     .then((user) => res.status(200).send(user)) // console.log(user) )
-    .catch((err) => res.status(500).send({ message: err.message })); // console.log(err) )
+    .catch((err) => {
+      if (err.message === 'Not found') {
+        res.status(404).send({ message: err.message })
+      }
+      else {
+        res.status(500).send({ message: err.message });
+      } // console.log(err) )
+    });
 };
 
 module.exports.createUser = (req, res) => {

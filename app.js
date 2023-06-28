@@ -14,6 +14,15 @@ app.use(express.json());
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '649b7762730dc903603b89a8' // вставьте сюда _id созданного в предыдущем пункте пользователя
+  };
+
+  next();
+});
+
 app.use(router);
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
