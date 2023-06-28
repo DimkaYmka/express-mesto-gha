@@ -16,7 +16,7 @@ module.exports.getUser = (req, res) => {
       }
       else {
         res.status(500).send({ message: err.message });
-      } // console.log(err) )
+      }
     });
 };
 
