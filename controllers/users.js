@@ -25,23 +25,52 @@ module.exports.createUser = (req, res) => {
 
   userSchema.create({ name, about, avatar })
     .then((user) => res.status(201).send(user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Данные введены некорректно.' });
+      }
+      else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
 
   userSchema.findByIdAndUpdate(req.user._id, { name, about })
-    .then(user => res.status(201).send({ data: user }))
-    .catch(err => res.status(500).send({ message: err.message }));
+    .orFail()
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(404).send({ message: 'Пользователь с с данным id не существует.' });
+      }
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные.' });
+      }
+      else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   userSchema.findByIdAndUpdate(req.user._id, { avatar })
-    .then(user => res.status(201).send({ data: user }))
-    .catch(err => res.status(500).send({ message: err.message }));
+    .orFail()
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(404).send({ message: 'Пользователь с с данным id не существует.' });
+      }
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные.' });
+      }
+      else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
 
 
