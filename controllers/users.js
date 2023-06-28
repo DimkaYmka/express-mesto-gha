@@ -1,4 +1,10 @@
 const userSchema = require('../models/user');
+const {
+  errCodeInvalidData,
+  errCodeNotFound,
+  errCodeDefault,
+  dafaultErrorMessage,
+} = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   userSchema.find({})
