@@ -37,28 +37,6 @@ module.exports.getUser = (req, res, next) => {
       return next(err);
     });
 };
-// module.exports.getUsers = (req, res) => {
-//   userSchema.find({})
-//     .then((users) => res.send(users))
-//     .catch(() => res.status(errCodeDefault).send({ message: defaultErrorMessage }));
-// };
-
-// module.exports.getUser = (req, res) => {
-//   userSchema.findById(req.params.id)
-//     .orFail(() => new Error('Not found'))
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.message === 'Not found') {
-//         res.status(errCodeNotFound).send({ message: defaultErrorMessage });
-//         return;
-//       }
-//       if (err.name === 'CastError') {
-//         res.status(errCodeInvalidData).send({ message: 'Пользователь с данным id не существует.' });
-//         return;
-//       }
-//       res.status(errCodeDefault).send({ message: defaultErrorMessage });
-//     });
-// };
 
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(String(req.body.password), 10)
