@@ -102,63 +102,56 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-// module.exports.updateUser = (req, res) => {
-//   const { name, about } = req.body;
-
-//   userSchema.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-//     .orFail()
-//     .then((user) => res.send({ data: user }))
-//     .catch((err) => {
-//       if (err.name === 'DocumentNotFoundError') {
-// eslint-disable-next-line max-len
-// return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
-//       }
-//       if (err.name === 'ValidationError') {
-//         return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
-//       } else {
-//         res.status(errCodeDefault).send({ message: defaultErrorMessage });
-//       }
-//     });
-// };
-
-// module.exports.updateAvatar = (req, res) => {
-//   const { avatar } = req.body;
-
-//   userSchema.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-//     .orFail()
-//     .then((user) => res.send({ data: user }))
-//     .catch((err) => {
-//       if (err.name === 'DocumentNotFoundError') {
-// eslint-disable-next-line max-len
-//         return res.status(errCodeNotFound).send({ message: 'Пользователь с с данным id не существует.' });
-//       }
-//       if (err.name === 'ValidationError') {
-//         return res.status(errCodeInvalidData).send({ message: 'Переданы некорректные данные.' });
-//       } else {
-//         res.status(errCodeDefault).send({ message: defaultErrorMessage });
-//       }
-//     });
-// };
-
-// TODO
-const changeUserData = (id, newData, res, next) => {
-  userSchema.findByIdAndUpdate(id, newData, { new: true, runValidators: true })
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Пользователь с с данным id не существует.'));
-      }
-      return next(err);
-    });
-};
-
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
-  return changeUserData(req.user._id, { name, about }, res, next);
+
+  userSchema.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .orFail()
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new NotFoundError('Пользователь по указанному id не найден.'));
+      }
+      if (err.name === 'ValidationError') {
+        return next(new NotFoundError('Переданы некорректные данные'));
+      } return next(err);
+    });
 };
 
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  return changeUserData(req.user._id, { avatar }, res, next);
+
+  userSchema.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail()
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new NotFoundError('Пользователь по указанному id не найден.'));
+      }
+      if (err.name === 'ValidationError') {
+        return next(new NotFoundError('Переданы некорректные данные'));
+      } return next(err);
+    });
 };
+// TODO
+// const changeUserData = (id, newData, res, next) => {
+//   userSchema.findByIdAndUpdate(id, newData, { new: true, runValidators: true })
+//     .orFail()
+//     .then((user) => res.send(user))
+//     .catch((err) => {
+//       if (err.name === 'DocumentNotFoundError') {
+//         return next(new NotFoundError('Пользователь с с данным id не существует.'));
+//       }
+//       return next(err);
+//     });
+// };
+
+// module.exports.updateUser = (req, res, next) => {
+//   const { name, about } = req.body;
+//   return changeUserData(req.user._id, { name, about }, res, next);
+// };
+
+// module.exports.updateAvatar = (req, res, next) => {
+//   const { avatar } = req.body;
+//   return changeUserData(req.user._id, { avatar }, res, next);
+// };
