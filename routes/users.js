@@ -3,14 +3,20 @@ const {
   getUsers, getUser, getUserById, updateUser, updateAvatar,
 } = require('../controllers/users');
 
+const {
+  validationUserId,
+  validationUpdateAvatar,
+  validationUpdateUser,
+} = require('../middlewares/celebrate');
+
 usersRouter.get('/', getUsers);
 
-usersRouter.get('/:id', getUser);
+usersRouter.get('/:id', validationUserId, getUser);
 
 usersRouter.get('/me', getUserById);
 
-usersRouter.patch('/me', updateUser);
+usersRouter.patch('/me', validationUpdateUser, updateUser);
 
-usersRouter.patch('/me/avatar', updateAvatar);
+usersRouter.patch('/me/avatar', validationUpdateAvatar, updateAvatar);
 
 module.exports = usersRouter;

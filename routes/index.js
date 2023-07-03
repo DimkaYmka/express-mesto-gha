@@ -12,12 +12,17 @@ const {
   getUsers, getUser, createUser, updateUser, updateAvatar, login,
 } = require('../controllers/users');
 
+const {
+  validationCreateUser,
+  validationLogin,
+} = require('../middlewares/celebrate');
+
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
 
 
-router.post('/signup', createUser);
-router.post('/signin', login);
+router.post('/signup', validationCreateUser, createUser);
+router.post('/signin', validationLogin, login);
 
 router.use(auth);
 
