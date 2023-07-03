@@ -11,6 +11,7 @@ const {
 const {
   getUsers, getUser, createUser, updateUser, updateAvatar, login,
 } = require('../controllers/users');
+
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
 

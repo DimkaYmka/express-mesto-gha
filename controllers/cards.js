@@ -8,6 +8,11 @@ const {
   defaultErrorMessage,
 } = require('../utils/errors');
 
+const NotFoundError = require('../errors/400');
+const AuthError = require('../errors/401');
+const BadRequestError = require('../errors/404');
+const ConflictError = require('../errors/409');
+
 module.exports.getCards = (req, res) => {
   cardSchema.find({})
     .then((cards) => res.send(cards))
