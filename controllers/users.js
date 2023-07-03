@@ -137,6 +137,7 @@ module.exports.login = (req, res, next) => {
 //     });
 // };
 
+
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
 

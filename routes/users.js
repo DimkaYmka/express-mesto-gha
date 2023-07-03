@@ -7,7 +7,7 @@ usersRouter.get('/', getUsers);
 
 usersRouter.get('/:id', getUser);
 
-usersRouter.get('/me', getUserById);
+// usersRouter.get('/me', getUserById);
 // usersRouter.post('/signup', createUser);
 
 usersRouter.patch('/me', updateUser);
