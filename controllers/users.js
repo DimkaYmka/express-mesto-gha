@@ -24,16 +24,24 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  userSchema.findById(req.params.id)
+  let userId;
+
+  if (req.params.id) {
+    userId = req.params.id;
+  } else {
+    userId = req.user._id;
+  }
+
+  userSchema.findById(userId)
     .orFail(() => new Error('Not found'))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.message === 'Not found') {
         return next(new NotFoundError('Пользователь с данным id не существует.'));
       }
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Пользователь с данным id не существует.'));
-      }
+      // if (err.name === 'CastError') {
+      //   return next(new BadRequestError('Пользователь с данным id не существует.'));
+      // }
       return next(err);
     });
 };
