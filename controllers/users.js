@@ -39,9 +39,9 @@ module.exports.getUser = (req, res, next) => {
       if (err.message === 'Not found') {
         return next(new NotFoundError('Пользователь с данным id не существует.'));
       }
-      // if (err.name === 'CastError') {
-      //   return next(new BadRequestError('Пользователь с данным id не существует.'));
-      // }
+      if (err.name === 'CastError') {
+        return next(new BadRequestError('Пользователь с данным id не существует.'));
+      }
       return next(err);
     });
 };
