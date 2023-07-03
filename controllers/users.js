@@ -1,6 +1,9 @@
 /* eslint-disable no-else-return */
 /* eslint-disable consistent-return */
+const bcrypt = require('bcryptjs');
+const jsonWebToken = require('jsonwebtoken');
 const userSchema = require('../models/user');
+
 const {
   errCodeInvalidData,
   errCodeNotFound,
@@ -31,19 +34,109 @@ module.exports.getUser = (req, res) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+// module.exports.createUser = (req, res, next) => {
+//   bcrypt.hash(String(req.body.password, 10))
+//     .then((hashedPassword) => {
+//       userSchema.create({
+//         ...req.body, password: hashedPassword,
+//       })
+//         .then((user) => res.status(201).send(user))
+//         .catch((err) => {
+//           if (err.name === 'ValidationError') {
+//             return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
+//           // eslint-disable-next-line brace-style
+//           }
+//           // if (err.code === 11000) {
+//           //   return next(new ConflictError(''));
+//           // }
+//           else {
+//             res.status(errCodeDefault).send({ message: defaultErrorMessage });
+//           }
+//           return next(err);
+//         });
+//     })
+//     .catch(next);
+// };
 
-  userSchema.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(errCodeInvalidData).send({ message: 'Данные введены некорректно.' });
-      } else {
-        res.status(errCodeDefault).send({ message: defaultErrorMessage });
-      }
-    });
+module.exports.createUser = (req, res, next) => {
+  bcrypt.hash(String(req.body.password), 10)
+    .then((hashedPassword) => {
+      userSchema.create({ ...req.body, password: hashedPassword })
+        .then((user) => {
+          res.send({ data: user });
+        })
+        .catch(next);
+    })
+    .catch(next);
 };
+
+// module.exports.login = (req, res, next) => {
+//   const { email, password } = req.body;
+//   userSchema.findOne({ email })
+//     .select('+password')
+//     .orFail(() => new Error('Пользователь с таким email не найден'))
+//     .then((user) => {
+//       console.log(user);
+//       bcrypt.compare(String(password), user.password)
+//         .then((isValidUser) => {
+//           if (isValidUser) {
+//             res.send({ data: user.toJSON() });
+//           } else {
+//             res.status(403).send({ message: 'Неправильный логин или пароль' });
+//           }
+//         });
+//     })
+//     .catch(next);
+// };
+
+module.exports.login = (req, res, next) => {
+  // Вытащить email и password
+  const { email, password } = req.body;
+
+  // Проверить существует ли пользователь с таким email
+  userSchema.findOne({ email })
+    .select('+password')
+    .orFail(() => new Error('Пользователь не найден'))
+    .then((user) => {
+      // Проверить совпадает ли пароль
+      bcrypt.compare(String(password), user.password)
+        .then((isValidUser) => {
+          if (isValidUser) {
+            // создать JWT
+            const jwt = jsonWebToken.sign({
+              _id: user._id,
+            }, 'JWT_SECRET');
+
+            // прикрепить его к куке
+            res.cookie('jwt', jwt, {
+              maxAge: 360000,
+              httpOnly: true,
+              sameSite: true,
+            });
+
+            // Если совпадает -- вернуть пользователя
+            res.send({ data: user.toJSON() });
+          } else {
+            // Если не совпадает -- вернуть ошибку
+            res.status(403).send({ message: 'Неправильный пароль' });
+          }
+        })
+    })
+    .catch(next);
+};
+
+// module.exports.getUserById = (req, res, next) => {
+//   userSchema.findById(req.user._id)
+//     .orFail()
+//     .then((user) => res.send(user))
+//     .catch((err) => {
+//       // if (err.name === 'DocumentNotFoundError') {
+//       //   return next(new NotFoundError('Пользователь по указанному id не найден.'));
+//       // }
+//       return next(err);
+//     });
+// };
+
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
