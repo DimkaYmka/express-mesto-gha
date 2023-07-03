@@ -8,7 +8,7 @@ cardsRouter.get('/', getCards);
 
 cardsRouter.delete('/:cardId', deleteCard);
 
-cardsRouter.post('/', createCard);
+// cardsRouter.post('/', createCard);
 
 cardsRouter.put('/:cardId/likes', addLikeCard);
 
