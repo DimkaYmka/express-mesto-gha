@@ -11,7 +11,7 @@ const {
 
 cardsRouter.get('/', getCards);
 
-cardsRouter.delete('/:cardId', deleteCard);
+cardsRouter.delete('/:cardId', validationCheckCard, deleteCard);
 
 cardsRouter.post('/', validationCreateCard, createCard);
 

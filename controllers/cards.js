@@ -81,11 +81,11 @@ module.exports.deleteLikeCard = (req, res, next) => {
     .orFail()
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Карточки с данным id не существует.'));
-      }
       if (err.name === 'CastError') {
         return next(new BadRequestError('Данные для лайка некорректные.'));
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new NotFoundError('Карточки с данным id не существует.'));
       }
       return next(err);
     });
