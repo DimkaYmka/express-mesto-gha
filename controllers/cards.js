@@ -52,7 +52,12 @@ module.exports.createCard = (req, res, next) => {
 
   cardSchema.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new NotFoundError('Введены неверные данные'));
+      }
+      return next(err);
+    });
 };
 
 module.exports.addLikeCard = (req, res, next) => {
