@@ -20,31 +20,69 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
+// module.exports.deleteCard = (req, res, next) => {
+//   const { cardId } = req.params;
+
+//   cardSchema
+//     .findByIdAndRemove(cardId)
+//     .orFail()
+//     .then((card) => {
+//       const ownerId = card.owner.toString();
+//       if (ownerId !== cardId) {
+//         throw new ForbiddenError('Вы не являетесь автором этой карточки.');
+//       }
+//       return card;
+//     })
+//     .then((card) => cardSchema.deleteOne(card))
+//     .then((card) => res.send(card))
+//     .catch((err) => {
+//       if (err.name === 'DocumentNotFoundError') {
+//         return next(new NotFoundError('Карточка с данным id не существует.'));
+//       }
+//       if (err.name === 'CastError') {
+//         return next(new BadRequestError('Карточка не существует.'));
+//       } else {
+//         return next(err);
+//       }
+//     });
+// };
+
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  cardSchema
-    .findByIdAndRemove(cardId)
-    .orFail()
+  // cardSchema
+  //   .findByIdAndRemove(cardId)
+  //   .orFail()
+  //   .then((card) => {
+  //     const ownerId = card.owner.toString();
+  //     if (ownerId !== cardId) {
+  //       throw new ForbiddenError('Вы не являетесь автором этой карточки.');
+  //     }
+  //     return card;
+  //   })
+  //   .then((card) => cardSchema.deleteOne(card))
+  //   .then((card) => res.send(card))
+  //   .catch((err) => {
+  //     if (err.name === 'DocumentNotFoundError') {
+  //       return next(new NotFoundError('Карточка с данным id не существует.'));
+  //     }
+  //     if (err.name === 'CastError') {
+  //       return next(new BadRequestError('Карточка не существует.'));
+  //     } else {
+  //       return next(err);
+  //     }
+  //   });
+  cardSchema.findById(cardId)
     .then((card) => {
-      const ownerId = card.owner.toString();
-      if (ownerId !== cardId) {
-        throw new ForbiddenError('Вы не являетесь автором этой карточки.');
+      if (!card) {
+        throw new NotFoundError('Карточка не существует.');
       }
-      return card;
+      if (!card.owner.equals(req.user._id)) {
+        return next(new ForbiddenError('Вы не являетесь автором этой карточки.'));
+      }
+      return card.deleteOne().then(() => res.send({ message: 'Карточка удалена' }));
     })
-    .then((card) => cardSchema.deleteOne(card))
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Карточка с данным id не существует.'));
-      }
-      if (err.name === 'CastError') {
-        return next(new NotFoundError('Карточка с данным id не существует.'));
-      } else {
-        return next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.createCard = (req, res, next) => {
@@ -78,14 +116,24 @@ module.exports.addLikeCard = (req, res, next) => {
 
 module.exports.deleteLikeCard = (req, res, next) => {
   cardSchema.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
-    .orFail()
-    .then((card) => res.send(card))
+    // .orFail()
+    // .then((card) => res.send(card))
+    // .catch((err) => {
+    //   if (err.name === 'CastError') {
+    //     return next(new BadRequestError('Данные для лайка некорректные.'));
+    //   }
+    //   if (err.name === 'DocumentNotFoundError') {
+    //     return next(new NotFoundError('Карточки с данным id не существует.'));
+    //   }
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточки с данным id не существует.');
+      }
+      res.send({ data: card });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadRequestError('Данные для лайка некорректные.'));
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Карточки с данным id не существует.'));
       }
       return next(err);
     });

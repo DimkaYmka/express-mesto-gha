@@ -99,7 +99,9 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  userSchema.findById(req.user._id)
+  const { userId } = req.params;
+
+  userSchema.findById(userId)
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
@@ -110,22 +112,32 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-// module.exports.updateUser = (req, res, next) => {
-//   const { name, about } = req.body;
+// module.exports.getUserById = (req, res, next) => {
+//   let userId;
 
-//   userSchema.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+//   if (req.params.id) {
+//     userId = req.params.id;
+//   } else {
+//     userId = req.user._id;
+//   }
+
+
+//   userSchema
+//     .findById(userId)
 //     .orFail()
-//     .then((user) => res.send({ data: user }))
+//     .then((user) => res.status(200).send(user))
 //     .catch((err) => {
-//       if (err.name === 'DocumentNotFoundError') {
-//         return next(new NotFoundError('Пользователь по указанному id не найден.'));
+//       if (err.name === 'CastError') {
+//         return next(new NotFoundError('Invalid data when get user'));
 //       }
-//       if (err.name === 'ValidationError') {
-//         return next(new NotFoundError('Переданы некорректные данные'));
-//       } return next(err);
+
+//       if (err.name === 'DocumentNotFoundError') {
+//         return next(new BadRequestError(`User Id: ${userId} is not found`));
+//       }
+
+//       return next(res);
 //     });
 // };
-
 // module.exports.updateAvatar = (req, res, next) => {
 //   const { avatar } = req.body;
 

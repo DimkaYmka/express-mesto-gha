@@ -7,7 +7,7 @@ const {
   errCodeDefault,
   dafaultErrorMessage,
 } = require('../utils/errors');
-
+const NotFoundError = require('../errors/400');
 const {
   getUsers, getUser, createUser, updateUser, updateAvatar, login,
 } = require('../controllers/users');
@@ -28,6 +28,6 @@ router.use(auth);
 
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
-router.use('/*', (req, res) => res.status(errCodeNotFound).send({ message: 'Страницы не существует' }));
+router.use('/*', (req, res, next) => next(new NotFoundError('Страницы не существует')));
 
 module.exports = router;
