@@ -116,25 +116,25 @@ module.exports.addLikeCard = (req, res, next) => {
 
 module.exports.deleteLikeCard = (req, res, next) => {
   cardSchema.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
-    // .orFail()
-    // .then((card) => res.send(card))
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     return next(new BadRequestError('Данные для лайка некорректные.'));
-    //   }
-    //   if (err.name === 'DocumentNotFoundError') {
-    //     return next(new NotFoundError('Карточки с данным id не существует.'));
-    //   }
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточки с данным id не существует.');
-      }
-      res.send({ data: card });
-    })
+    .orFail()
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadRequestError('Данные для лайка некорректные.'));
       }
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new NotFoundError('Карточки с данным id не существует.'));
+      }
+      // .then((card) => {
+      //   if (!card) {
+      //     throw new NotFoundError('Карточки с данным id не существует.');
+      //   }
+      //   res.send({ data: card });
+      // })
+      // .catch((err) => {
+      //   if (err.name === 'CastError') {
+      //     return next(new BadRequestError('Данные для лайка некорректные.'));
+      //   }
       return next(err);
     });
 };

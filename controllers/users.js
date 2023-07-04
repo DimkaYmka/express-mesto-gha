@@ -113,6 +113,26 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 // module.exports.getUserById = (req, res, next) => {
+//   userSchema.findById(req.user._id)
+//     .then((user) => {
+//       if (!user) {
+//         throw new NotFoundError('Пользователь по указанному id не найден.');
+//       }
+//       res.status(200)
+//         .send(user);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         next(BadRequestError('Переданы некорректные данные.'));
+//       } else if (err.message === 'NotFound') {
+//         next(new NotFoundError('Пользователь по указанному id не найден.'));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
+// module.exports.getUserById = (req, res, next) => {
 //   let userId;
 
 //   if (req.params.id) {
