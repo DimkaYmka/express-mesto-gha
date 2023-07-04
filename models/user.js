@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-
-const urlPattern = require('../middlewares/celebrate');
+// const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
 
@@ -26,22 +24,22 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    validate: {
-      validator: (email) => validator.isEmail(email),
-      message: 'Неверный Email',
-    },
+    // validate: {
+    //   validator: (v) => validator.isEmail(v),
+    //   message: 'Неверный Email',
+    // },
     required: true,
     unique: true,
   },
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (url) => urlPattern.test(url),
-      message: 'Неверный формат ссылки',
-    },
+    // validate: {
+    //   validator: (url) => urlPattern.test(url),
+    //   message: 'Неверный формат ссылки',
+    // },
   },
-}, { versionKey: false });
+}, { versionKey: false })
 
 // eslint-disable-next-line func-names
 userSchema.methods.toJSON = function () {
