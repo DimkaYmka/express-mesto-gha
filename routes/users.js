@@ -11,9 +11,9 @@ const {
 
 usersRouter.get('/', getUsers);
 
-usersRouter.get('/:id', validationUserId, getUser);
-
 usersRouter.get('/me', getUserById);
+
+usersRouter.get('/:id', validationUserId, getUser);
 
 usersRouter.patch('/me', validationUpdateUser, updateUser);
 

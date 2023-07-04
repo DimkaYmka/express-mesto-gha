@@ -20,7 +20,6 @@ const {
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
 
-
 router.post('/signup', validationCreateUser, createUser);
 router.post('/signin', validationLogin, login);
 

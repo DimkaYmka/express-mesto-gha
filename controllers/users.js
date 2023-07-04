@@ -98,62 +98,47 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserById = (req, res, next) => {
-  const { userId } = req.params;
-
-  userSchema.findById(userId)
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Пользователь по указанному id не найден.'));
-      }
-      return next(err);
-    });
-};
-
 // module.exports.getUserById = (req, res, next) => {
-//   let userId;
+//   const { userId } = req.params;
 
-//   if (req.params.id) {
-//     userId = req.params.id;
-//   } else {
-//     userId = req.user._id;
-//   }
-
-
-//   userSchema
-//     .findById(userId)
+//   userSchema.findById(userId)
 //     .orFail()
-//     .then((user) => res.status(200).send(user))
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         return next(new NotFoundError('Invalid data when get user'));
-//       }
-
-//       if (err.name === 'DocumentNotFoundError') {
-//         return next(new BadRequestError(`User Id: ${userId} is not found`));
-//       }
-
-//       return next(res);
-//     });
-// };
-// module.exports.updateAvatar = (req, res, next) => {
-//   const { avatar } = req.body;
-
-//   userSchema.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-//     .orFail()
-//     .then((user) => res.send({ data: user }))
+//     .then((user) => res.send(user))
 //     .catch((err) => {
 //       if (err.name === 'DocumentNotFoundError') {
 //         return next(new NotFoundError('Пользователь по указанному id не найден.'));
 //       }
-//       if (err.name === 'ValidationError') {
-//         return next(new NotFoundError('Переданы некорректные данные'));
-//       } return next(err);
+//       return next(err);
 //     });
 // };
-// TODO
+
+module.exports.getUserById = (req, res, next) => {
+  let userId;
+
+  if (req.params.id) {
+    userId = req.params.id;
+  } else {
+    userId = req.user._id;
+  }
+
+
+  userSchema
+    .findById(userId)
+    .orFail()
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(new NotFoundError('Invalid data when get user'));
+      }
+
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new BadRequestError(`User Id: ${userId} is not found`));
+      }
+
+      return next(res);
+    });
+};
+
 const changeUserData = (id, newData, res, next) => {
   userSchema.findByIdAndUpdate(id, newData, { new: true, runValidators: true })
     .orFail()
