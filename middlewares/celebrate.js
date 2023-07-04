@@ -1,8 +1,8 @@
 const { celebrate, Joi } = require('celebrate');
 
 // const urlPattern = /(https?:\/\/)(w{3}\.)?\w+[-.~:/?#[\]@!$&'()*+,;=]*#?/;
-const urlPattern = /^https?:\/\/(?:w{3}\.)?(?:[a-z0-9]+[a-z0-9-]*\.)+[a-z]{2,}(?::[0-9]+)?(?:\/\S*)?#?$/i;
-
+// const urlPattern = /^https?:\/\/(?:w{3}\.)?(?:[a-z0-9]+[a-z0-9-]*\.)+[a-z]{2,}(?::[0-9]+)?(?:\/\S*)?#?$/i;
+const urlPattern = /^https?:\/\/(?:www\.)?[a-z\d-]+(?:\.[a-z\d-]+)*[a-z]{2,}(?::\d+)?(?:\/\S*)?#?$/i;
 const validationCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -49,7 +49,7 @@ const validationCreateCard = celebrate({
 
 const validationCheckCard = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().length(24).hex(),
+    id: Joi.string().required().length(24).hex(),
   }),
 });
 
