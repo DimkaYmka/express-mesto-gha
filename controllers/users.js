@@ -9,13 +9,6 @@ const AuthError = require('../errors/401');
 const BadRequestError = require('../errors/404');
 const ConflictError = require('../errors/409');
 
-// const {
-//   errCodeInvalidData,
-//   errCodeNotFound,
-//   errCodeDefault,
-//   defaultErrorMessage,
-// } = require('../utils/errors');
-
 module.exports.getUsers = (req, res, next) => {
   userSchema
     .find({})
@@ -98,20 +91,6 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-// module.exports.getUserById = (req, res, next) => {
-//   const { userId } = req.params;
-
-//   userSchema.findById(userId)
-//     .orFail()
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'DocumentNotFoundError') {
-//         return next(new NotFoundError('Пользователь по указанному id не найден.'));
-//       }
-//       return next(err);
-//     });
-// };
-
 module.exports.getUserById = (req, res, next) => {
   let userId;
 
@@ -120,7 +99,6 @@ module.exports.getUserById = (req, res, next) => {
   } else {
     userId = req.user._id;
   }
-
 
   userSchema
     .findById(userId)

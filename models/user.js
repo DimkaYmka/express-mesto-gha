@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     //   message: 'Неверный формат ссылки',
     // },
   },
-}, { versionKey: false })
+}, { versionKey: false });
 
 // eslint-disable-next-line func-names
 userSchema.methods.toJSON = function () {
