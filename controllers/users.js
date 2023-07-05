@@ -92,28 +92,21 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  // let userId;
-
-  // if (req.params.id) {
-  const userId = req.params.id;
-  // } else {
-  //   userId = req.user._id;
-  // }
-
-  userSchema
-    .findById(userId)
-    // .orFail()
+  userSchema.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь с данным id не существует.');
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Переданы некорректные данные.'));
+        next(BadRequestError('Переданы некорректные данные.'));
+      } else if (err.message === 'NotFound') {
+        next(new NotFoundError('Пользователь с данным id не существует.'));
+      } else {
+        next(err);
       }
-      return next(err);
     });
 };
 
