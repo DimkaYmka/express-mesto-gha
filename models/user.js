@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    validate: {
-      validator: (v) => validator.isEmail(v),
-      message: 'Неверный Email',
-    },
+    // validate: {
+    //   validator: (v) => validator.isEmail(v),
+    //   message: 'Неверный Email',
+    // },
     required: true,
     unique: true,
   },
