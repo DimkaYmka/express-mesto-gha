@@ -103,7 +103,7 @@ module.exports.getUserById = (req, res, next) => {
   userSchema
     .findById(req.params.id)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new NotFoundError('Переданы некорректные данные'));
