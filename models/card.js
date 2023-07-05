@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const urlPattern = require('../middlewares/celebrate');
 const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({

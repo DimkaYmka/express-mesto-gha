@@ -1,12 +1,7 @@
 /* eslint-disable no-unused-vars */
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
-const {
-  errCodeInvalidData,
-  errCodeNotFound,
-  errCodeDefault,
-  dafaultErrorMessage,
-} = require('../utils/errors');
+
 const NotFoundError = require('../errors/400');
 const {
   getUsers, getUser, createUser, updateUser, updateAvatar, login,

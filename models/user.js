@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-// const urlPattern = require('../middlewares/celebrate');
-
 const userSchema = new mongoose.Schema({
 
   name: {
@@ -30,10 +28,6 @@ const userSchema = new mongoose.Schema({
       validator: (v) => validator.isEmail(v),
       message: 'Неверный Email',
     },
-    // validate: {
-    //   validator: (v) => validator.isEmail(v),
-    //   message: 'Неверный Email',
-    // },
     required: true,
     unique: true,
   },
@@ -44,10 +38,6 @@ const userSchema = new mongoose.Schema({
       validator: (url) => validator.isURL(url),
       message: 'Неверный формат ссылки',
     },
-    // validate: {
-    //   validator: (url) => urlPattern.test(url),
-    //   message: 'Неверный формат ссылки',
-    // },
   },
 }, { versionKey: false });
 

@@ -17,13 +17,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  // let userId;
-
-  // if (req.params.id) {
   const userId = req.params.id;
-  // } else {
-  //   userId = req.user._id;
-  // }
 
   userSchema.findById(userId)
     .orFail(() => new Error('Not found'))
