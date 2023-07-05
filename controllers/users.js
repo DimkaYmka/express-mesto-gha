@@ -17,11 +17,10 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  let userId;
+  // let userId;
 
-  if (req.params.id) {
-    userId = req.params.id;
-  }
+  // if (req.params.id) {
+  const userId = req.params.id;
   // } else {
   //   userId = req.user._id;
   // }
@@ -93,11 +92,10 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  let userId;
+  // let userId;
 
-  if (req.params.id) {
-    userId = req.params.id;
-  }
+  // if (req.params.id) {
+  const userId = req.params.id;
   // } else {
   //   userId = req.user._id;
   // }

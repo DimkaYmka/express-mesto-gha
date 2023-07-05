@@ -5,10 +5,14 @@ const auth = (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
 
+  if (!token) {
+    return next(new AuthError('Необходимо авторизоваться.'));
+  }
+
   try {
     payload = jwt.verify(token, 'JWT_SECRET');
   } catch (err) {
-    return next(new AuthError('Необходимо авторизоваться'));
+    return next(new AuthError('Необходимо авторизоваться.'));
   }
 
   req.user = payload;
