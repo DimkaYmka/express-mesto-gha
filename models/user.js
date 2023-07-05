@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const urlPattern = require('../middlewares/celebrate');
+// const urlPattern = require('../middlewares/celebrate');
 
 const userSchema = new mongoose.Schema({
 
@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: (url) => validator.isURL(url),
+      message: 'Неверный формат ссылки',
+    },
     // validate: {
     //   validator: (url) => urlPattern.test(url),
     //   message: 'Неверный формат ссылки',
