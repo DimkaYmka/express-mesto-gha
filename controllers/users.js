@@ -95,22 +95,22 @@ module.exports.getUserById = (req, res, next) => {
   // let userId;
 
   // if (req.params.id) {
-  const userId = req.params.id;
+  // const userId = req.params.id;
   // } else {
   //   userId = req.user._id;
   // }
 
   userSchema
-    .findById(userId)
+    .findById(req.params.id)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new NotFoundError('Invalid data when get user'));
+        return next(new NotFoundError('Переданы некорректные данные'));
       }
 
       if (err.name === 'DocumentNotFoundError') {
-        return next(new BadRequestError(`User Id: ${userId} is not found`));
+        return next(new BadRequestError('Пользователь с данным id не существует.'));
       }
 
       return next(res);
