@@ -60,4 +60,5 @@ module.exports = {
   validationUpdateUser,
   validationCreateCard,
   validationCheckCard,
+  urlPattern,
 };
